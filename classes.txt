@@ -1,0 +1,8 @@
+Accident
+Triple Ride Detection person
+Triple_riding
+motorcycle
+number_plate
+rider
+with_helmet
+without_helmet

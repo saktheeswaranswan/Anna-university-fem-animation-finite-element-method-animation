@@ -1,0 +1,207 @@
+let matrices = [
+  [
+    [0, 0, 1, 0, 0, 0],
+    [0, 2, 0, 3, 0, 0],
+    [0, 0, 4, 0, 5, 0],
+    [0, 0, 0, 6, 0, 7],
+    [8, 0, 0, 0, 0, 9],
+    [0, 10, 0, 0, 0, 0]
+  ],
+  [
+    [0, 0, 2, 0, 0, 0],
+    [0, 1, 0, 0, 0, 3],
+    [0, 4, 0, 0, 0, 5],
+    [0, 0, 0, 1, 0, 6],
+    [7, 0, 0, 0, 0, 8],
+    [0, 9, 0, 0, 0, 10]
+  ],
+  [
+    [0, 1, 0, 0, 0, 2],
+    [0, 0, 3, 0, 0, 4],
+    [0, 0, 0, 5, 0, 6],
+    [7, 0, 0, 0, 8, 0],
+    [0, 9, 0, 0, 0, 10],
+    [0, 0, 0, 0, 0, 0]
+  ],
+  [
+    [0, 0, 1, 0, 0, 0],
+    [2, 0, 0, 3, 0, 0],
+    [0, 4, 0, 0, 5, 0],
+    [0, 0, 6, 0, 0, 7],
+    [8, 0, 0, 0, 9, 0],
+    [0, 10, 0, 0, 0, 0]
+  ],
+  [
+    [0, 0, 0, 1, 0, 0],
+    [0, 2, 0, 0, 3, 0],
+    [4, 0, 5, 0, 0, 0],
+    [0, 6, 0, 7, 0, 0],
+    [0, 0, 8, 0, 9, 0],
+    [0, 0, 0, 10, 0, 0]
+  ],
+  [
+    [0, 1, 0, 0, 2, 0],
+    [0, 0, 3, 0, 0, 4],
+    [0, 0, 0, 5, 0, 6],
+    [7, 0, 0, 0, 8, 0],
+    [0, 9, 0, 0, 0, 10],
+    [0, 0, 0, 0, 0, 0]
+  ],
+  [
+    [0, 0, 0, 1, 0, 0],
+    [0, 2, 0, 0, 3, 0],
+    [4, 0, 5, 0, 0, 0],
+    [0, 6, 0, 7, 0, 0],
+    [0, 0, 8, 0, 9, 0],
+    [0, 0, 0, 10, 0, 0]
+  ],
+  [
+    [0, 0, 1, 0, 0, 0],
+    [0, 2, 0, 3, 0, 0],
+    [4, 0, 0, 0, 5, 0],
+    [0, 6, 0, 0, 0, 7],
+    [0, 0, 8, 0, 9, 0],
+    [0, 0, 0, 0, 10, 0]
+  ],
+  [
+    [0, 1, 0, 0, 2, 0],
+    [0, 0, 3, 0, 4, 0],
+    [5, 0, 0, 6, 0, 7],
+    [0, 8, 0, 9, 0, 0],
+    [0, 0, 10, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0]
+  ],
+  [
+    [0, 0, 1, 0, 2, 0],
+    [0, 0, 3, 0, 4, 0],
+    [0, 0, 5, 0, 6, 0],
+    [7, 0, 0, 8, 0, 0],
+    [0, 9, 0, 10, 0, 0],
+    [0, 0, 0, 0, 0, 0]
+  ]
+];
+
+let rowSelect1, colSelect1, rowSelect2, colSelect2;
+let selectedMatrix1 = 0, selectedMatrix2 = 0;
+let slider;
+let highlightRow = -1, highlightCol = -1;
+let globalMatrix = Array(8).fill().map(() => Array(8).fill(0));
+
+function setup() {
+  createCanvas(800, 600);
+  
+  // Dropdowns to select matrices
+  rowSelect1 = createSelect();
+  colSelect1 = createSelect();
+  rowSelect2 = createSelect();
+  colSelect2 = createSelect();
+  
+  // Populate dropdowns
+  for (let i = 0; i < matrices.length; i++) {
+    rowSelect1.option(i);
+    rowSelect2.option(i);
+  }
+  
+  rowSelect1.position(10, height + 10);
+  colSelect1.position(150, height + 10);
+  
+  rowSelect2.position(300, height + 10);
+  colSelect2.position(450, height + 10);
+  
+  // Slider for animation
+  slider = createSlider(0, 5, 0);
+  slider.position(10, height + 40);
+  
+  rowSelect1.changed(updateSelections);
+  colSelect1.changed(updateSelections);
+  rowSelect2.changed(updateSelections);
+  colSelect2.changed(updateSelections);
+  
+}
+
+function updateSelections() {
+  selectedMatrix1 = rowSelect1.value();
+  selectedMatrix2 = rowSelect2.value();
+}
+
+function draw() {
+  background(255);
+  
+  // Draw selected matrices and global stiffness matrix
+  drawGlobalMatrix();
+  
+  // Draw selected matrices
+  drawMatrix(matrices[selectedMatrix1], 20, 20);
+  drawMatrix(matrices[selectedMatrix2], 400, 20);
+  
+  // Get current slider value
+  let currentStep = slider.value();
+  
+  // Highlight the corresponding matrix elements during animation
+  highlightElement(matrices[selectedMatrix1], currentStep, color(255, 0, 0), selectedMatrix1, currentStep);
+  highlightElement(matrices[selectedMatrix2], currentStep, color(0, 0, 255), selectedMatrix2, currentStep);
+  
+  // Assemble the global stiffness matrix with contributions from both matrices
+  assembleGlobalMatrix(matrices[selectedMatrix1], matrices[selectedMatrix2], currentStep);
+}
+
+function drawMatrix(matrix, xOffset, yOffset) {
+  let size = 40;  // Smaller size to fit on the canvas
+  
+  for (let i = 0; i < matrix.length; i++) {
+    for (let j = 0; j < matrix[i].length; j++) {
+      fill(matrix[i][j] !== 0 ? 0 : 200);
+      rect(xOffset + j * size, yOffset + i * size, size, size);
+      
+      if (matrix[i][j] !== 0) {
+        fill(0);
+        text(matrix[i][j], xOffset + j * size + 10, yOffset + i * size + 30);
+      }
+    }
+  }
+}
+
+function drawGlobalMatrix() {
+  let size = 40;
+  for (let i = 0; i < 8; i++) {
+    for (let j = 0; j < 8; j++) {
+      fill(240);
+      rect(600 + j * size, 100 + i * size, size, size);
+      fill(0);
+      text(globalMatrix[i][j], 600 + j * size + 10, 100 + i * size + 30);
+    }
+  }
+}
+
+function highlightElement(matrix, step, colorToUse, matrixIndex, currentStep) {
+  let size = 40;
+  for (let i = 0; i < matrix.length; i++) {
+    for (let j = 0; j < matrix[i].length; j++) {
+      if (matrix[i][j] !== 0 && (i === step || j === step)) {
+        fill(colorToUse);
+        rect(600 + j * size, 100 + i * size, size, size);
+        fill(255);
+        textSize(14);
+        text(i + ',' + j, 600 + j * size + 10, 100 + i * size + 20);
+      }
+    }
+  }
+}
+
+function assembleGlobalMatrix(matrix1, matrix2, currentStep) {
+  let size = 40;
+  for (let i = 0; i < matrix1.length; i++) {
+    for (let j = 0; j < matrix1[i].length; j++) {
+      if (matrix1[i][j] !== 0) {
+        globalMatrix[i][j] += matrix1[i][j];
+      }
+    }
+  }
+  for (let i = 0; i < matrix2.length; i++) {
+    for (let j = 0; j < matrix2[i].length; j++) {
+      if (matrix2[i][j] !== 0) {
+        globalMatrix[i][j] += matrix2[i][j];
+      }
+    }
+  }
+}

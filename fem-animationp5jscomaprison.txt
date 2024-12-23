@@ -1,0 +1,143 @@
+let matrixA = [
+  [1, 2, 3, 4, 5, 6],
+  [6, 1, 2, 3, 4, 5],
+  [5, 6, 1, 2, 3, 4],
+  [4, 5, 6, 1, 2, 3],
+  [3, 4, 5, 6, 1, 2],
+  [2, 3, 4, 5, 6, 1]
+];
+let matrixB = [
+  [7, 8, 9, 10, 11, 12],
+  [12, 7, 8, 9, 10, 11],
+  [11, 12, 7, 8, 9, 10],
+  [10, 11, 12, 7, 8, 9],
+  [9, 10, 11, 12, 7, 8],
+  [8, 9, 10, 11, 12, 7]
+];
+let globalStiffnessMatrix = Array(6).fill().map(() => Array(6).fill(0));
+
+let rowSlider, colSlider;
+let gridSize = 6;
+let cellSize = 50;
+let sparseMatrix = [
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+  [0, 0, 0, 0]
+];
+
+function setup() {
+  createCanvas(800, 800);
+  
+  // Row slider (for i)
+  rowSlider = createSlider(0, gridSize - 1, 0, 1);
+  rowSlider.position(10, height + 10);
+  rowSlider.style('width', '250px');
+  
+  // Column slider (for j)
+  colSlider = createSlider(0, gridSize - 1, 0, 1);
+  colSlider.position(300, height + 10);
+  colSlider.style('width', '250px');
+}
+
+function draw() {
+  background(255);
+  
+  let row = rowSlider.value(); // Get the row index
+  let col = colSlider.value(); // Get the column index
+  
+  // Display the matrices
+  drawMatrix(matrixA, 0, 0, "Matrix A");
+  drawMatrix(matrixB, width / 2, 0, "Matrix B");
+  
+  // Display the global stiffness matrix
+  drawMatrix(globalStiffnessMatrix, 0, height / 2, "Global Stiffness Matrix");
+  
+  // Display the sparse matrix plot (4x4 elements)
+  drawSparseMatrix(sparseMatrix, 400, height / 2);
+  
+  // Highlight the selected row and column for Matrix A and Matrix B
+  drawHighlight(row, col, 0, 0); // For Matrix A
+  drawHighlight(row, col, width / 2, 0); // For Matrix B
+  
+  // Update the global stiffness matrix based on row and column selection
+  if (row !== col) {
+    globalStiffnessMatrix[row][col] = matrixA[row][col] + matrixB[row][col]; // Example logic for global matrix assembly
+  }
+
+  // Compare elements of the matrices
+  compareAndHighlight(row, col);
+}
+
+// Function to draw a matrix
+function drawMatrix(matrix, offsetX, offsetY, label) {
+  stroke(0);
+  noFill();
+  
+  // Draw the matrix grid
+  for (let r = 0; r < gridSize; r++) {
+    for (let c = 0; c < gridSize; c++) {
+      rect(offsetX + c * cellSize, offsetY + r * cellSize, cellSize, cellSize);
+      textAlign(CENTER, CENTER);
+      text(matrix[r][c], offsetX + c * cellSize + cellSize / 2, offsetY + r * cellSize + cellSize / 2);
+    }
+  }
+  
+  // Display label for each matrix
+  textAlign(CENTER, TOP);
+  text(label, offsetX + gridSize * cellSize / 2, offsetY - 20);
+}
+
+// Function to draw a sparse matrix (4x4)
+function drawSparseMatrix(matrix, offsetX, offsetY) {
+  let cellSize = 50;
+  stroke(0);
+  noFill();
+  
+  // Draw the sparse matrix grid
+  for (let r = 0; r < 4; r++) {
+    for (let c = 0; c < 4; c++) {
+      rect(offsetX + c * cellSize, offsetY + r * cellSize, cellSize, cellSize);
+      textAlign(CENTER, CENTER);
+      if (matrix[r][c] !== 0) {
+        text(matrix[r][c], offsetX + c * cellSize + cellSize / 2, offsetY + r * cellSize + cellSize / 2);
+      }
+    }
+  }
+  
+  // Display label for the sparse matrix
+  textAlign(CENTER, TOP);
+  text("Sparse Matrix (4x4)", offsetX + 2 * cellSize, offsetY - 20);
+}
+
+// Function to highlight the current row and column
+function drawHighlight(row, col, offsetX, offsetY) {
+  fill(255, 0, 0, 100); // Red highlight
+  
+  // Highlight the row
+  for (let c = 0; c < gridSize; c++) {
+    rect(offsetX + c * cellSize, offsetY + row * cellSize, cellSize, cellSize);
+  }
+  
+  // Highlight the column
+  for (let r = 0; r < gridSize; r++) {
+    rect(offsetX + col * cellSize, offsetY + r * cellSize, cellSize, cellSize);
+  }
+  
+  // Highlight the selected cell
+  fill(255, 0, 0);
+  ellipse(offsetX + col * cellSize + cellSize / 2, offsetY + row * cellSize + cellSize / 2, 20, 20);
+}
+
+// Function to compare and highlight if i == j or if element is not added
+function compareAndHighlight(row, col) {
+  let x = row * cellSize;
+  let y = col * cellSize;
+  
+  if (row === col) {
+    fill(255, 0, 0); // Red for i == j
+    ellipse(x + cellSize / 2, y + cellSize / 2, 20, 20);
+  } else {
+    fill(0, 0, 0); // Default for other conditions
+  }
+}

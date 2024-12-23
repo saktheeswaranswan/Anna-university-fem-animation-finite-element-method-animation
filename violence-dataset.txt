@@ -1,0 +1,38 @@
+!pip install roboflow
+
+from roboflow import Roboflow
+rf = Roboflow(api_key="tnEw4AAumriiQGr2CNdj")
+project = rf.workspace("abiraminul").project("sp-cdjqa")
+version = project.version(10)
+dataset = version.download("yolov11")
+
+
+https://universe.roboflow.com/abiraminul/sp-cdjqa
+
+!pip install roboflow
+
+from roboflow import Roboflow
+rf = Roboflow(api_key="tnEw4AAumriiQGr2CNdj")
+project = rf.workspace("abiraminul").project("sp-cdjqa")
+version = project.version(10)
+dataset = version.download("yolov11")
+                
+
+https://universe.roboflow.com/abiraminul/sp-cdjqa
+
+
+https://universe.roboflow.com/abiraminul/sp-cdjqa
+
+
+!pip install roboflow
+
+from roboflow import Roboflow
+rf = Roboflow(api_key="UlyCtoigrZZaN0AkF34m")
+project = rf.workspace("data-zygje").project("sajam")
+version = project.version(10)
+dataset = version.download("yolov8-obb")
+                
+
+https://universe.roboflow.com/data-zygje/sajam
+
+                

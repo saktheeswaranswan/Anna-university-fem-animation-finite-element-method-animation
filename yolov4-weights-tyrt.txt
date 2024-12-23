@@ -1,0 +1,23 @@
+yolov4-p6.cfg - 1280x1280 - 72.1% mAP@0.5 (54.0% AP@0.5:0.95) - 32(V) FPS - xxx BFlops (xxx FMA) - 487 MB: yolov4-p6.weights
+
+pre-trained weights for training: https://github.com/AlexeyAB/darknet/releases/download/darknet_yolo_v4_pre/yolov4-p6.conv.289
+yolov4-p5.cfg - 896x896 - 70.0% mAP@0.5 (51.6% AP@0.5:0.95) - 43(V) FPS - xxx BFlops (xxx FMA) - 271 MB: yolov4-p5.weights
+
+pre-trained weights for training: https://github.com/AlexeyAB/darknet/releases/download/darknet_yolo_v4_pre/yolov4-p5.conv.232
+
+
+
+https://github.com/maudzung/Complex-YOLOv4-Pytorch
+
+
+
+https://github.com/AlexeyAB/darknet/wiki/YOLOv4-model-zoo
+
+
+https://github.com/bharath5673/StrongSORT-YOLO
+
+
+https://hackmd.io/NFj2NrmqTcefjc2l94KjpQ?view#Model-descriptions
+
+
+https://github.com/AlexeyAB/darknet/wiki/YOLOv4-model-zoo
